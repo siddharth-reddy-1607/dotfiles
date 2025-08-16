@@ -66,6 +66,8 @@
     ethtool
     pciutils # lspci
     usbutils # lsusb
+
+    tmux
   ];
 
   # basic configuration of git, please change to your own
@@ -83,10 +85,51 @@
   programs.zsh = {
     enable = true;
     enableCompletion = true;
+    oh-my-zsh = {
+        enable = true;
+        theme = "robbyrussell";
+    };
+  };
+
+  home.sessionVariables = {
+  SHELL = "${pkgs.zsh}/bin/zsh";
+  };
+
+  #Kanshi
+  services.kanshi = {
+    enable = true;
+    systemdTarget = "wayland-session@Hyprland.target";
+
+    settings = [
+    {
+      profile.name = "undocked";
+      profile.outputs = [
+          {
+            criteria = "eDP-1";
+            scale = 1.0;
+            status = "enable";
+          }
+        ];
+    }
+    {
+      profile.name = "nlr_single";
+      profile.outputs = [
+          {
+            criteria = "HDMI-A-1";
+            position = "0,0";
+            mode = "1920x1080@60Hz";
+            status = "enable";
+          }
+          {
+            criteria = "eDP-1";
+            status = "disable";
+          }
+        ];
+    }
+    ];
   };
 
   programs.neovim.enable = true;
-  programs.tmux.enable = true;
 
   # This value determines the home Manager release that your
   # configuration is compatible with. This helps avoid breakage

@@ -23,7 +23,17 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   #Display Manger
-  services.xserver.displayManager.gdm.enable = true;
+  xdg.portal.enable = true;
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  services.xserver.displayManager.sddm.enable = true;
+
+ # Prevent from suspending on laptop lid close
+  services.logind.extraConfig = ''
+    HandleLidSwitch=ignore
+    HandleLidSwitchExternalPower=ignore
+    HandleLidSwitchDocked=ignore
+  '';
+
 
   #Sound + Pipewire
   security.rtkit.enable = true;
@@ -61,14 +71,16 @@
   hardware.nvidia.modesetting.enable = true;
 
   # Hyprland + Utils
-  programs.hyprland.enable = true;
+  programs.hyprland = {
+      enable = true;
+      withUWSM = true;
+  };
   programs.waybar.enable = true;
   programs.hyprlock.enable = true;
   services.hypridle.enable = true;
 
   services.xserver.enable = true;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.sid = {
     isNormalUser = true;
     description = "sid";
@@ -82,6 +94,7 @@
      git
      vim
      wget
+     gcc
 
      discord
      spotify
