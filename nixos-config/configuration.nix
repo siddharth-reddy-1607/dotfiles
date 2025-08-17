@@ -25,7 +25,9 @@
   #Display Manger
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-  services.xserver.displayManager.sddm.enable = true;
+  services.xserver.displayManager.gdm = {
+    enable = true;
+  };
 
  # Prevent from suspending on laptop lid close
   services.logind.extraConfig = ''
@@ -33,7 +35,6 @@
     HandleLidSwitchExternalPower=ignore
     HandleLidSwitchDocked=ignore
   '';
-
 
   #Sound + Pipewire
   security.rtkit.enable = true;
@@ -69,6 +70,8 @@
   hardware.graphics.enable = true;
   hardware.nvidia.open = true;
   hardware.nvidia.modesetting.enable = true;
+  hardware.nvidia.powerManagement.enable = true;
+  boot.kernelParams = [ "module_blacklist=1915" "nvidia-drm.modeset=1"];
 
   # Hyprland + Utils
   programs.hyprland = {
@@ -81,10 +84,14 @@
 
   services.xserver.enable = true;
 
+  #ZSH
+  programs.zsh.enable = true;
+
   users.users.sid = {
     isNormalUser = true;
     description = "sid";
     extraGroups = [ "networkmanager" "wheel" ];
+    shell = pkgs.zsh;
     packages = with pkgs; [
     ];
   };
@@ -111,6 +118,10 @@
      wofi                    # app launcher
      ghostty                   # terminal (example)
    ];
+
+  environment.sessionVariables = {
+    XDG_CONFIG_HOME = "$HOME/.config";
+  };
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you

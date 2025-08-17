@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   home.username = "sid";
@@ -80,19 +80,31 @@
   programs.ghostty = {
     enable = true;
     enableZshIntegration = true;
+    settings = {
+      font-family = "JetBrainsMono Nerd Font";
+      font-size = 13;
+      shell-integration = "zsh";
+      theme = "GruvboxDark";
+      command = "${pkgs.zsh}/bin/zsh";
+    };
   };
 
   programs.zsh = {
     enable = true;
     enableCompletion = true;
+    autocd = true;
+    autosuggestion.enable = true;
+    dotDir = ".config/zsh";
     oh-my-zsh = {
         enable = true;
         theme = "robbyrussell";
     };
-  };
-
-  home.sessionVariables = {
-  SHELL = "${pkgs.zsh}/bin/zsh";
+    initContent = lib.mkOrder 1000 ''
+        # Don't so vim key bindings on startup
+        unsetopt beep
+        # Bind Shift + Tab to accept autosuggestions
+        bindkey '^[[Z' autosuggest-accept
+    '';
   };
 
   #Kanshi
